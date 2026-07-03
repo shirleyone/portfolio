@@ -922,6 +922,35 @@
     margin: 48px 0;
   }
 
+  /* ---------- Back to top FAB ---------- */
+  .back-to-top {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 150;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 26px rgba(232, 115, 79, 0.42);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(16px) scale(0.9);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s, box-shadow 0.25s ease;
+  }
+  .back-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+  .back-to-top.visible:hover { transform: translateY(-3px) scale(1); box-shadow: 0 14px 32px rgba(232, 115, 79, 0.5); }
+  .back-to-top svg { width: 22px; height: 22px; }
+  @media (max-width: 720px) {
+    .back-to-top { bottom: 20px; right: 18px; width: 46px; height: 46px; }
+  }
+
   /* ---------- Contact ---------- */
   .contact {
     background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
@@ -1591,6 +1620,10 @@
   <div class="lightbox-caption"></div>
 </div>
 
+<button id="backToTop" class="back-to-top" type="button" aria-label="回到頂端">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+</button>
+
 <script>
   // Preloader
   const loader = document.getElementById('loader');
@@ -1652,6 +1685,15 @@
     });
   }, { threshold: 0.15 });
   revealEls.forEach(el => observer.observe(el));
+
+  // 回到頂端 FAB：滑動超過 400px 出現，點擊平滑捲回頂部
+  const backToTop = document.getElementById('backToTop');
+  if (backToTop) {
+    const toggleBTT = () => backToTop.classList.toggle('visible', window.scrollY > 400);
+    window.addEventListener('scroll', toggleBTT, { passive: true });
+    toggleBTT();
+    backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  }
 
   // Stat count-up：數字往上跑，ease-out 減速停在結果值
   function animateCount(el) {
