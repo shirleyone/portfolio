@@ -1047,20 +1047,25 @@
     visibility: hidden;
     pointer-events: none;
   }
-  .loader-cat {
-    width: 190px;
-    height: 147px;
-    overflow: visible;
-  }
-  .loader-cat .cat-line,
-  .loader-cat .cat-whisker {
+  .loader-cat { width: 240px; height: auto; overflow: visible; }
+  .loader-cat .cat-line {
     fill: none;
     stroke: var(--accent-dark);
+    stroke-width: 2.4;
     stroke-linecap: round;
     stroke-linejoin: round;
+    stroke-dasharray: 100;
+    animation: catDraw 2.8s ease-in-out infinite;
   }
-  .loader-cat .cat-line { stroke-width: 3.5; }
-  .loader-cat .cat-whisker { stroke-width: 2.2; }
+  @keyframes catDraw {
+    0% { stroke-dashoffset: 100; }
+    50% { stroke-dashoffset: 0; }
+    72% { stroke-dashoffset: 0; }
+    100% { stroke-dashoffset: -100; }
+  }
+  .loader-cat .cat-whiskers path { fill: none; stroke: var(--accent-dark); stroke-width: 1.7; stroke-linecap: round; }
+  .loader-cat .cat-whiskers { opacity: 0; animation: whiskFade 2.8s ease-in-out infinite; }
+  @keyframes whiskFade { 0%, 42% { opacity: 0; } 56%, 72% { opacity: 1; } 100% { opacity: 0; } }
   .loader-text {
     font-size: 0.8rem;
     font-weight: 700;
@@ -1189,25 +1194,16 @@
 <body>
 
 <div class="loader" id="loader" aria-hidden="true">
-  <svg class="loader-cat" viewBox="0 0 220 170" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="載入中">
-    <path class="cat-line" d="M60,155
-      C58,140 62,120 68,105
-      C74,90 80,78 86,66
-      C84,54 86,40 82,28
-      C80,38 84,46 90,50
-      C92,42 96,32 102,26
-      C106,34 108,44 112,52
-      C118,62 122,74 124,88
-      C128,102 134,112 136,126
-      C138,138 130,148 118,150
-      C122,146 128,142 134,138
-      C150,132 168,124 186,126
-      C200,128 212,136 218,148
-      C220,156 212,160 206,152
-      C202,146 208,142 214,146"></path>
-    <path class="cat-whisker" d="M78,60 Q 55,54 40,52"></path>
-    <path class="cat-whisker" d="M78,64 Q 54,64 38,66"></path>
-    <path class="cat-whisker" d="M78,68 Q 56,74 42,80"></path>
+  <svg class="loader-cat" viewBox="0 0 320 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="載入中">
+    <path class="cat-line" pathLength="100" d="M8,120 C40,120 58,122 76,116 C88,112 82,100 74,103 C68,105 74,118 88,117 C100,119 110,119 122,118 C112,113 104,108 104,96 C104,84 116,70 128,60 C131,54 134,49 138,46 L142,28 L152,44 C156,43 162,43 166,44 L170,29 L179,45 C186,50 190,54 192,60 C200,70 208,84 206,96 C204,108 196,113 188,118 C198,120 208,118 212,110 C217,102 211,97 207,102 C203,106 210,110 216,108 C228,120 238,120 248,118 C260,116 266,99 249,97 C233,95 235,120 254,119 C268,117 267,102 254,105 C270,120 290,120 316,120"></path>
+    <g class="cat-whiskers">
+      <path d="M133,52 Q113,48 101,47"></path>
+      <path d="M133,57 Q113,57 99,58"></path>
+      <path d="M134,62 Q115,67 105,73"></path>
+      <path d="M187,52 Q207,48 219,47"></path>
+      <path d="M187,57 Q207,57 221,58"></path>
+      <path d="M186,62 Q205,67 215,73"></path>
+    </g>
   </svg>
   <p class="loader-text">Loading<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></p>
 </div>
@@ -1636,11 +1632,7 @@
       el.style.strokeDashoffset = '0';
     });
   }
-  const catLine = document.querySelector('.cat-line');
-  if (catLine) drawLine(catLine, 1.2, 0);
-  document.querySelectorAll('.cat-whisker').forEach((w) => {
-    drawLine(w, 0.25, 1.2);
-  });
+  // 載入貓咪改用純 CSS 描繪動畫（catDraw）
   if (loader) {
     const loaderStart = performance.now();
     const minLoaderDuration = 1500;
